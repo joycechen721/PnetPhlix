@@ -59,23 +59,3 @@ User* UserDatabase::get_user_from_email(const string& email) const
         return it.get_value();
     return nullptr;
 }
-
-//int main() {
-//  TreeMultimap<std::string, int> tmm;
-//  tmm.insert("carey", 5);
-//  tmm.insert("carey", 6);
-//  tmm.insert("carey", 7);
-//  tmm.insert("david", 25);
-//  tmm.insert("david", 425);
-//    tmm.insert("cAReY", 90);
-//    tmm.insert("Laura", 1);
-//    TreeMultimap<std::string,int>::Iterator it = tmm.find("carey"); // prints 5, 6, and 7 in some order
-//    while (it.is_valid()) {
-//        std::cout << it.get_value() << std::endl;
-//        it.advance();
-//    }
-//    TreeMultimap<std::string,int>::Iterator itt = tmm.find("Laura");
-//    if (itt.is_valid())
-//        std::cout << "Laura is in the multimap!\n";
-//
-//}

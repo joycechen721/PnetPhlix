@@ -1,7 +1,6 @@
 #include "Recommender.h"
 #include "UserDatabase.h"
 #include "MovieDatabase.h"
-
 #include "User.h"
 #include "Movie.h"
 
@@ -11,24 +10,18 @@
 #include <algorithm>
 using namespace std;
 
+bool alphabeticallyEarlier(const Movie* m1, const Movie* m2);
+
+bool hasHigherRating(const Movie* m1, const Movie* m2);
+
+bool hasHigherCompatibility(const MovieAndRank& m1, const MovieAndRank& m2);
+
 Recommender::Recommender(const UserDatabase& user_database,
                          const MovieDatabase& movie_database)
 {
     m_user_database = &user_database;
     m_movie_database = &movie_database;
  }
-
-bool Recommender::alphabeticallyEarlier(const Movie* m1, const Movie* m2){
-    return m1->get_title() < m2->get_title();
-}
-
-bool Recommender::hasHigherRating(const Movie* m1, const Movie* m2){
-    return m1->get_rating() > m2->get_rating();
-}
-
-bool Recommender::hasHigherCompatibility(const MovieAndRank& m1, const MovieAndRank& m2){
-    return m1.compatibility_score > m2.compatibility_score;
-}
 
 vector<MovieAndRank> Recommender::recommend_movies(const string& user_email, int movie_count) const
 {
@@ -75,7 +68,7 @@ vector<MovieAndRank> Recommender::recommend_movies(const string& user_email, int
         }
     }
     
-    //create vector of movies pointers (all movies with scores >=1)
+//    create vector of movies pointers (for all movies with scores >=1)
     vector<Movie*> all_movies;
     for (auto i : rating_map){
         //filter out movies already watched
@@ -97,7 +90,6 @@ vector<MovieAndRank> Recommender::recommend_movies(const string& user_email, int
     }
     stable_sort(movie_ranks.begin(), movie_ranks.end(), hasHigherCompatibility);
     
-//        final_movie_ranks.assign(movie_ranks.begin(), movie_ranks.end());
     long count = movie_count >= movie_ranks.size() ? movie_ranks.size() : movie_count;
     for(vector<MovieAndRank>::iterator it = movie_ranks.begin(); it != movie_ranks.begin() + count; it++){
         final_movie_ranks.push_back(*it);
@@ -105,8 +97,14 @@ vector<MovieAndRank> Recommender::recommend_movies(const string& user_email, int
     return final_movie_ranks;
 }
 
-//MovieAndRank* temp = new MovieAndRank(currID, 20);
-//map<Movie*, int>::iterator it;
-//it = rating_map.find(*k);
-//if(it == rating_map.end()) rating_map[*k] = 30;
-//else rating_map[*k] = it->second + 1;
+bool alphabeticallyEarlier(const Movie* m1, const Movie* m2){
+    return m1->get_title() < m2->get_title();
+}
+
+bool hasHigherRating(const Movie* m1, const Movie* m2){
+    return m1->get_rating() > m2->get_rating();
+}
+
+bool hasHigherCompatibility(const MovieAndRank& m1, const MovieAndRank& m2){
+    return m1.compatibility_score > m2.compatibility_score;
+}

@@ -3,7 +3,6 @@
 
 #include <string>
 #include <vector>
-#include "Movie.h"
 
 class UserDatabase;
 class MovieDatabase;
@@ -29,9 +28,6 @@ class Recommender
   private:
     const UserDatabase* m_user_database;
     const MovieDatabase* m_movie_database;
-    static bool alphabeticallyEarlier(const Movie* m1, const Movie* m2);
-    static bool hasHigherRating(const Movie* m1, const Movie* m2);
-    static bool hasHigherCompatibility(const MovieAndRank& m1, const MovieAndRank& m2);
 };
 
 #endif // RECOMMENDER_INCLUDED

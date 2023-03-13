@@ -6,30 +6,34 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <chrono>
 using namespace std;
 
-//////////////////////////i/////////////////////////////////////////////////////
-//
-// You are free to do whatever you want with this file, since you won't
-// be turning it in.  Presumably, you will make changes to help you test
-// your classes.  For example, you might try to implement only some User
-// member functions to start out with, and so replace our main routine with
-// one that simply creates a User and verifies that the member functions you
-// implemented work correctly.
-//
-//////////////////////////i/////////////////////////////////////////////////////
+class Timer
+{
+  public:
+    Timer()
+    {
+        start();
+    }
+    void start()
+    {
+        m_time = std::chrono::high_resolution_clock::now();
+    }
+    double elapsed() const
+    {
+        std::chrono::duration<double, std::milli> diff =
+                          std::chrono::high_resolution_clock::now() - m_time;
+        return diff.count();
+    }
+  private:
+    std::chrono::high_resolution_clock::time_point m_time;
+};
 
-
-  // If your program is having trouble finding these files. replace the
-  // string literals with full path names to the files.  Also, for test
-  // purposes, you may want to create some small, simple user and movie
-  // data files to makde debuggiing easier, so you can replace the string
-  // literals with the names of those smaller files.
-
-//const string USER_DATAFILE  = "/Users/joycechen/users.txt";
+const string USER_DATAFILE  = "/Users/joycechen/users.txt";
 const string MOVIE_DATAFILE = "/Users/joycechen/movies.txt";
 
-const string USER_DATAFILE  = "/Users/joycechen/Desktop/users.txt";
+//const string USER_DATAFILE  = "/Users/joycechen/Desktop/users.txt";
 //const string MOVIE_DATAFILE = "/Users/joycechen/Desktop/movies.txt";
 
 void findMatches(const Recommender& r, const MovieDatabase& md, const string& user_email, int num_recommendations) {
@@ -63,7 +67,10 @@ int main()
     MovieDatabase mdb;
     mdb.load(MOVIE_DATAFILE);
     Recommender rc(udb, mdb);
-    findMatches(rc, mdb, "climberkip@gmail.com", 10);
+    Timer timer;
+    timer.start();
+    findMatches(rc, mdb, "CaWei7937@charter.net", 100);
+    cout << "ELAPSED TIME: " << timer.elapsed() << endl;
     
 //    for (;;)
 //    {
