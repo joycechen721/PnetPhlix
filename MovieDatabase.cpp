@@ -34,12 +34,14 @@ bool MovieDatabase::load(const string& filename)
         string releaseYear;
         getline(infile, releaseYear);
         
+        //push all directors of this movie into a directorList vector
         string directors;
         getline(infile, directors);
         string director = "";
         vector<string> directorList;
         for(int i = 0; i != directors.size(); i++){
             if(directors.at(i) != ','){
+                //case sensitive check
                 director += tolower(directors.at(i));
             }
             else{
@@ -49,6 +51,7 @@ bool MovieDatabase::load(const string& filename)
         }
         directorList.push_back(director);
         
+        //push all actors of this movie into an actorList vector
         string actors;
         getline(infile, actors);
         string actor = "";
@@ -64,6 +67,7 @@ bool MovieDatabase::load(const string& filename)
         }
         actorList.push_back(actor);
         
+        //push all genres of this movie into a genreList vector
         string genres;
         getline(infile, genres);
         string genre = "";
@@ -82,20 +86,24 @@ bool MovieDatabase::load(const string& filename)
         float rating;
         infile >> rating;
         infile.ignore(10000, '\n');
-
-
+        
+        //create the new movie
         Movie* currMovie = new Movie(id, title, releaseYear, directorList, actorList, genreList, rating);
         
+        //map movie id to movie
         m_id_map.insert(id, currMovie);
         
+        //map director to movie
         for(vector<string>::iterator it = directorList.begin(); it != directorList.end(); it++){
             m_director_map.insert(*it, currMovie);
         }
         
+        //map actor to movie
         for(vector<string>::iterator it = actorList.begin(); it != actorList.end(); it++){
             m_actor_map.insert(*it, currMovie);
         }
         
+        //map genre to movie
         for(vector<string>::iterator it = genreList.begin(); it != genreList.end(); it++){
             m_genre_map.insert(*it, currMovie);
         }
@@ -117,6 +125,7 @@ Movie* MovieDatabase::get_movie_from_id(const string& id) const
 vector<Movie*> MovieDatabase::get_movies_with_director(const string& director) const
 {
     string temp = director;
+    //case sensitive check
     TreeMultimap<std::string, Movie*>::Iterator it = m_director_map.find(toLowercase(temp));
     vector<Movie*> movies;
     while(it.is_valid()){
@@ -150,6 +159,7 @@ vector<Movie*> MovieDatabase::get_movies_with_genre(const string& genre) const
     return movies;
 }
 
+//turns a string to all lowercase characters
 string& MovieDatabase::toLowercase(string &str) const{
     for(int i = 0; i < str.size(); i++){
         str.at(i) = tolower(str.at(i));

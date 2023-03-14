@@ -38,7 +38,7 @@ const string MOVIE_DATAFILE = "/Users/joycechen/movies.txt";
 
 void findMatches(const Recommender& r, const MovieDatabase& md, const string& user_email, int num_recommendations) {
     // get up to ten movie recommendations for the user
-        vector<MovieAndRank> recommendations = r.recommend_movies(user_email, 10);
+        vector<MovieAndRank> recommendations = r.recommend_movies(user_email, num_recommendations);
         if (recommendations.empty())
            cout << "We found no movies to recommend :(.\n";
         else {
@@ -69,7 +69,7 @@ int main()
     Recommender rc(udb, mdb);
     Timer timer;
     timer.start();
-    findMatches(rc, mdb, "CaWei7937@charter.net", 100);
+    findMatches(rc, mdb, "ZyaireRa2638@earthlink.net", 90000);
     cout << "ELAPSED TIME: " << timer.elapsed() << endl;
     
 //    for (;;)

@@ -68,16 +68,19 @@ vector<MovieAndRank> Recommender::recommend_movies(const string& user_email, int
         }
     }
     
-//    create vector of movies pointers (for all movies with scores >=1)
+    //filter out movies already watched
+    for(vector<string>::iterator it = movieIDs.begin(); it != movieIDs.end(); it++){
+        Movie* u = m_movie_database->get_movie_from_id(*it);
+        if(rating_map.find(u) != rating_map.end()) rating_map.erase(u);
+    }
+    
+    //create vector of movies pointers (for all movies with scores >=1)
     vector<Movie*> all_movies;
     for (auto i : rating_map){
-        //filter out movies already watched
-        vector<string>::iterator it;
-        it = find(movieIDs.begin(), movieIDs.end(), i.first->get_id());
-        if(it == movieIDs.end()){
-            all_movies.push_back(i.first);
-        }
+        all_movies.push_back(i.first);
     }
+    
+    //sort alphabetically first, then by rating
     sort(all_movies.begin(), all_movies.end(), alphabeticallyEarlier);
     stable_sort(all_movies.begin(), all_movies.end(), hasHigherRating);
     
@@ -88,8 +91,11 @@ vector<MovieAndRank> Recommender::recommend_movies(const string& user_email, int
         MovieAndRank temp(id, score);
         movie_ranks.push_back(temp);
     }
+    
+    //stable sort the compatibility last (previous sorts will remain in order)
     stable_sort(movie_ranks.begin(), movie_ranks.end(), hasHigherCompatibility);
     
+    //check if # of requested movie reccs <= movies w/ score of at least 1
     long count = movie_count >= movie_ranks.size() ? movie_ranks.size() : movie_count;
     for(vector<MovieAndRank>::iterator it = movie_ranks.begin(); it != movie_ranks.begin() + count; it++){
         final_movie_ranks.push_back(*it);
@@ -97,14 +103,17 @@ vector<MovieAndRank> Recommender::recommend_movies(const string& user_email, int
     return final_movie_ranks;
 }
 
+//checks which Movie's title is alphabetically earlier
 bool alphabeticallyEarlier(const Movie* m1, const Movie* m2){
     return m1->get_title() < m2->get_title();
 }
 
+//checks which Movie has a higher rating
 bool hasHigherRating(const Movie* m1, const Movie* m2){
     return m1->get_rating() > m2->get_rating();
 }
 
+//checks which Movie has a higher compatibility score
 bool hasHigherCompatibility(const MovieAndRank& m1, const MovieAndRank& m2){
     return m1.compatibility_score > m2.compatibility_score;
 }
